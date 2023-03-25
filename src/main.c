@@ -29,7 +29,7 @@ struct OrbitData
 struct OrbitLine {
     int max_index;
     int current_index; // current index for insertion
-    Vector2 orbitalPoints[256];
+    Vector2 orbitalPoints[4096]; // could maybe tie a position var ptr to the body
 };
 
 void add_orbit_point(struct OrbitLine *orbitLine, Vector2 point) {
@@ -38,10 +38,13 @@ void add_orbit_point(struct OrbitLine *orbitLine, Vector2 point) {
     }
 
     orbitLine->orbitalPoints[orbitLine->current_index] = point;
+    orbitLine->current_index++;
 }
 
-void draw_orbit_line(Vector2 *orbitalPoints[]) { 
-
+void draw_orbit_line(struct OrbitLine orbitLine) { 
+    for (int i = 0; i < orbitLine.max_index; i++) {
+        DrawPixelV(orbitLine.orbitalPoints[i], RED);
+    }
 }
 
 // Program main entry point
@@ -67,7 +70,9 @@ int main(void)
     // Star -- function
     Vector2 starPosition = { 0, 0 };
     Vector2 starVelocity = { (float) 0, (float)0 };
-    float starMass = 333000000;
+    // float starMass = 333000;
+    // float starMass = 333000000;
+    float starMass = 3330000000;
     float starRadius = 64;
     struct Body star = {starPosition, starVelocity, starMass, starRadius};
 
@@ -80,6 +85,8 @@ int main(void)
     struct Body body = {bodyPosition, bodyVelocity, bodyMass, bodyRadius};
 
     struct OrbitData data = { distance_to_body(body.position, star.position) };
+
+    struct OrbitLine orbit_line = {4096, 0};
 
 
     // Important stuff
@@ -116,6 +123,10 @@ int main(void)
 
         // data update
         data.bodyDistance = distance_to_body(body.position, star.position);
+
+        // orbit line update
+        bodyPosition = body.position;
+        if ((int)bodyPosition.y % 5 == 0) add_orbit_point(&orbit_line, body.position);
         // Draw
         BeginDrawing();
             ClearBackground(RAYWHITE);
@@ -124,13 +135,14 @@ int main(void)
             BeginMode2D(camera);
                 DrawCircleV(star.position, star.radius, YELLOW); // truescale 695
                 DrawCircleV(body.position, body.radius, BLUE); // truescale 6
-                DrawLineV(body.position, Vector2Add(body.position, Vector2Scale(body.velocity, 3000)), RED); // draws a line showing the orbit.
+                DrawLineV(body.position, Vector2Add(body.position, Vector2Scale(body.velocity, 200)), RED); // draws a line showing velocity vector of body
+                draw_orbit_line(orbit_line);
             EndMode2D();
             
             // DrawText(TextFormat("Star Mass: %.10e", star.mass), 20, 50, 28, BLACK);
             // DrawText(TextFormat("Body Mass: %.10e", body.mass), 20, 70, 28, BLACK);
-            DrawText(TextFormat("Star Mass: %.2f", star.mass), 20, 50, 28, BLACK);
-            DrawText(TextFormat("Body Mass: %.2f", body.mass), 20, 70, 28, BLACK);
+            DrawText(TextFormat("Star Mass: %.2f kg", star.mass), 20, 50, 28, BLACK);
+            DrawText(TextFormat("Body Mass: %.2f kg", body.mass), 20, 70, 28, BLACK);
             DrawText(TextFormat("Body Distance: %.3f", data.bodyDistance), 20, 90, 28, BLACK);
             DrawText(TextFormat("Body Velocity X: %.8f", body.velocity.x), 20, 110, 28, BLACK);
             DrawText(TextFormat("Body Velocity Y: %.8f", body.velocity.y), 20, 130, 28, BLACK);
