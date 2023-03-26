@@ -29,7 +29,7 @@ struct OrbitData
 struct OrbitLine {
     int max_index;
     int current_index; // current index for insertion
-    Vector2 orbitalPoints[4096]; // could maybe tie a position var ptr to the body
+    Vector2 orbital_points[4096]; // could maybe tie a position var ptr to the body
 };
 
 void add_orbit_point(struct OrbitLine *orbitLine, Vector2 point) {
@@ -37,14 +37,16 @@ void add_orbit_point(struct OrbitLine *orbitLine, Vector2 point) {
         orbitLine -> current_index = 0;
     }
 
-    orbitLine->orbitalPoints[orbitLine->current_index] = point;
+    orbitLine->orbital_points[orbitLine->current_index] = point;
     orbitLine->current_index++;
 }
 
 void draw_orbit_line(struct OrbitLine orbitLine) { 
-    for (int i = 0; i < orbitLine.max_index; i++) {
-        DrawPixelV(orbitLine.orbitalPoints[i], RED);
-    }
+    size_t number_of_points = sizeof(orbitLine.orbital_points)/sizeof(orbitLine.orbital_points[0]);
+    DrawLineStrip(orbitLine.orbital_points, (int)number_of_points, RED);
+    // for (int i = 0; i < orbitLine.max_index; i++) {
+    //     DrawPixelV(orbitLine.orbital_points[i], RED);
+    // }
 }
 
 // Program main entry point
@@ -63,7 +65,7 @@ int main(void)
     camera.zoom = 1.0f;
     camera.rotation = 0.0f;
 
-    float cameraSpeed = 7.0f;
+    float cameraSpeed = 10.0f;
     float camera_zoom_max = 5.0f;
     float camera_zoom_min = 0.1f;
     
@@ -77,9 +79,10 @@ int main(void)
     struct Body star = {starPosition, starVelocity, starMass, starRadius};
 
     // Orbiting Body -- function
-    Vector2 bodyPosition = { 150, 0 };
+    Vector2 bodyPosition = { 1000, 0 };
     // Vector2 bodyVelocity = { (float)-0.00, (float)-0.003 }; // avg earth 29,784.8 m/s
-    Vector2 bodyVelocity = { (float)-0.00, (float)-0.03 }; // avg earth 29,784.8 m/s
+    // Vector2 bodyVelocity = { (float)-0.00, (float)-0.03 }; // avg earth 29,784.8 m/s
+    Vector2 bodyVelocity = { (float)-0.00, (float)-0.02 }; // avg earth 29,784.8 m/s
     float bodyMass = 1;
     float bodyRadius = 5;
     struct Body body = {bodyPosition, bodyVelocity, bodyMass, bodyRadius};
@@ -142,10 +145,10 @@ int main(void)
             // DrawText(TextFormat("Star Mass: %.10e", star.mass), 20, 50, 28, BLACK);
             // DrawText(TextFormat("Body Mass: %.10e", body.mass), 20, 70, 28, BLACK);
             DrawText(TextFormat("Star Mass: %.2f kg", star.mass), 20, 50, 28, BLACK);
-            DrawText(TextFormat("Body Mass: %.2f kg", body.mass), 20, 70, 28, BLACK);
-            DrawText(TextFormat("Body Distance: %.3f", data.bodyDistance), 20, 90, 28, BLACK);
-            DrawText(TextFormat("Body Velocity X: %.8f", body.velocity.x), 20, 110, 28, BLACK);
-            DrawText(TextFormat("Body Velocity Y: %.8f", body.velocity.y), 20, 130, 28, BLACK);
+            DrawText(TextFormat("Body Mass: %.2f kg", body.mass), 20, 80, 28, BLACK);
+            DrawText(TextFormat("Body Distance: %.3f", data.bodyDistance), 20, 110, 28, BLACK);
+            DrawText(TextFormat("Body Velocity X: %.8f", body.velocity.x), 20, 140, 28, BLACK);
+            DrawText(TextFormat("Body Velocity Y: %.8f", body.velocity.y), 20, 170, 28, BLACK);
 
 
         EndDrawing();
