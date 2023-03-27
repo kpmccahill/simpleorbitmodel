@@ -12,15 +12,15 @@ struct Body
 {
     Vector2 position;
     Vector2 velocity;
-    float mass;
-    float radius;
+    double mass;
+    double radius;
 };
 
-extern float distance_to_body(Vector2 reference, Vector2 target);
+extern double distance_to_body(Vector2 reference, Vector2 target);
 
-extern float caluclate_attractive_force(struct Body reference, struct Body target);
+extern double caluclate_attractive_force(struct Body reference, struct Body target);
 
-extern float calculate_force_acceleration(float attractive_force, struct Body body);
+extern double calculate_force_acceleration(double attractive_force, struct Body body);
 
 Vector2 caluclate_orbit_vector(struct Body reference, struct Body target);
 
