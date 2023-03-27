@@ -147,7 +147,8 @@ int main(void)
             BeginMode2D(camera);
                 DrawCircleV(star.position, star.radius, YELLOW); // truescale 695
                 DrawCircleV(data.scaledPosition, body.radius, BLUE); // truescale 6
-                DrawLineV(body.position, Vector2Add(body.position, Vector2Scale(body.velocity, 200)), RED); // draws a line showing velocity vector of body
+                // need to think of a new way to draw the velocity vector.
+                // DrawLineV(body.position, Vector2Add(body.position, Vector2Scale(body.velocity, 200)), RED); // draws a line showing velocity vector of body
                 draw_orbit_line(orbit_line);
             EndMode2D();
             
@@ -165,7 +166,7 @@ int main(void)
 
             // UI -- Simulation Information.
             DrawText(TextFormat("Time Scale: %.1fx", time_scale), 1470, 1000, 28, BLACK);
-            DrawText(TextFormat("Simulation Scale: 1/%.1f", simScale), 1470, 1030, 28, BLACK);
+            DrawText(TextFormat("Simulation Scale: 1/%.1fm", simScale), 1470, 1030, 28, BLACK);
 
 
         EndDrawing();
