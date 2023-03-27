@@ -15,18 +15,17 @@
 /// this needs delta time, so maybe time to implement it in godot? or you could just implement delta time in this :) 
 /// might as well do that to learn about it why not
 #include <math.h>
-
 #include "raylib.h"
-
 #include "body.h"
 
 struct OrbitData
 {
     double bodyDistance;
-    // double attractiveForce; // newtons universal grav
     Vector2 scaledPosition;
 };
 
+// stores data for the line that's drawn behind the body
+// WARNING THIS BREAKS WITH SCALING
 struct OrbitLine {
     int max_index;
     int current_index; // current index for insertion
@@ -44,7 +43,7 @@ void add_orbit_point(struct OrbitLine *orbitLine, Vector2 point) {
 
 void draw_orbit_line(struct OrbitLine orbitLine) { 
     size_t number_of_points = sizeof(orbitLine.orbital_points)/sizeof(orbitLine.orbital_points[0]);
-    DrawLineStrip(orbitLine.orbital_points, (int)number_of_points, RED);
+    DrawLineStrip(orbitLine.orbital_points, (int)number_of_points- 1, RED);
     // for (int i = 0; i < orbitLine.max_index; i++) {
     //     DrawPixelV(orbitLine.orbital_points[i], RED);
     // }
@@ -92,6 +91,8 @@ int main(void)
 
     struct OrbitLine orbit_line = {4096, 0};
 
+    float time_scale = 1.0;
+
     // Important stuff
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
 
@@ -99,7 +100,9 @@ int main(void)
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         // Update
-        float delta = GetFrameTime(); // for somoother movement
+        float delta = GetFrameTime() * time_scale; // for somoother movement
+
+        // --- Controls --- 
 
         // Camera Movement
         if (IsKeyDown(KEY_A)) camera.target.x -= cameraSpeed * delta;
@@ -112,6 +115,10 @@ int main(void)
         camera.zoom += ((float)GetMouseWheelMove()*0.05f);
         if (camera.zoom > camera_zoom_max) camera.zoom = camera_zoom_max;
         else if (camera.zoom < camera_zoom_min) camera.zoom = camera_zoom_min;
+
+        // Time scale
+        if(IsKeyDown(KEY_EQUAL)) time_scale = 10000.0;
+        else if(IsKeyDown(KEY_MINUS)) time_scale = 1.0;
 
         if (IsKeyPressed(KEY_R)) {
             camera.zoom = 1.0f;
@@ -146,18 +153,19 @@ int main(void)
             
 
             // UI --- Orbital Information
-            DrawText(TextFormat("Star Mass: %.4e kg", star.mass), 20, 50, 28, BLACK);
-            DrawText(TextFormat("Body Mass: %.4e kg", body.mass), 20, 80, 28, BLACK);
-            DrawText(TextFormat("Body Distance: %.3f", data.bodyDistance), 20, 110, 28, BLACK);
-            DrawText(TextFormat("Body Velocity X: %.8f", body.velocity.x), 20, 140, 28, BLACK);
-            DrawText(TextFormat("Body Velocity Y: %.8f", body.velocity.y), 20, 170, 28, BLACK);
+            DrawText(TextFormat("Star Mass: %.5e kg", star.mass), 20, 50, 28, BLACK);
+            DrawText(TextFormat("Body Mass: %.5e kg", body.mass), 20, 80, 28, BLACK);
+            DrawText(TextFormat("Body Distance: %.5em", data.bodyDistance), 20, 110, 28, BLACK);
+            DrawText(TextFormat("Body Velocity X (m/s): %.8f", body.velocity.x), 20, 140, 28, BLACK);
+            DrawText(TextFormat("Body Velocity Y (m/s): %.8f", body.velocity.y), 20, 170, 28, BLACK);
 
             // UI --- Camera Information
             DrawText(TextFormat("Camera Zoom: %.1f", camera.zoom), 20, 970, 28, BLACK);
             DrawText(TextFormat("Camera Position: %.1f, %.1f", camera.target.x, camera.target.y), 20, 1000, 28, BLACK);
 
             // UI -- Simulation Information.
-            DrawText(TextFormat("Time Scale: %.1fx", 1.0), 1600, 1000, 28, BLACK);
+            DrawText(TextFormat("Time Scale: %.1fx", time_scale), 1470, 1000, 28, BLACK);
+            DrawText(TextFormat("Simulation Scale: 1/%.1f", simScale), 1470, 1030, 28, BLACK);
 
 
         EndDrawing();
