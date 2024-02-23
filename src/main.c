@@ -15,6 +15,8 @@
 /// this needs delta time, so maybe time to implement it in godot? or you could just implement delta time in this :) 
 /// might as well do that to learn about it why not
 #include <math.h>
+#include <stddef.h>
+
 #include "raylib.h"
 #include "body.h"
 

@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 3.27)
+project(simpleorbitalmodel)
+
+INCLUDE_DIRECTORIES(include/)
+
+if (WIN32)
+    LINK_DIRECTORIES(lib/win)
+endif()
+if(UNIX)
+    LINK_DIRECTORIES(lib/linux)
+endif()
+file(GLOB SOURCES src/*.c)
+# file(GLOB INCLUDES include/*.h)
+
+# include(${INCLUDES})
+if (WIN32)
+    LINK_LIBRARIES(raylib opengl32 gdi32 winmm)
+endif()
+if(UNIX)
+    LINK_LIBRARIES(raylib GL m pthread dl rt X11)
+endif()
+add_executable(simpleorbitalmodel ${SOURCES}) 
