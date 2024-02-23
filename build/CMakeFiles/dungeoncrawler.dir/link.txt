@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/dungeoncrawler.dir/src/body.c.o CMakeFiles/dungeoncrawler.dir/src/main.c.o -o dungeoncrawler   -L/home/kylem/Projects/simpleorbitmodel/lib/linux  -Wl,-rpath,/home/kylem/Projects/simpleorbitmodel/lib/linux -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 

@@ -1,0 +1,3 @@
+/home/kylem/Projects/simpleorbitmodel/build/CMakeFiles/dungeoncrawler.dir
+/home/kylem/Projects/simpleorbitmodel/build/CMakeFiles/edit_cache.dir
+/home/kylem/Projects/simpleorbitmodel/build/CMakeFiles/rebuild_cache.dir
